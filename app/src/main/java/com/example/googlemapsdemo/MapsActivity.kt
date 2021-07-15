@@ -2,6 +2,7 @@ package com.example.googlemapsdemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
+import com.google.android.gms.maps.model.MapStyleOptions
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -88,5 +90,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 地図上に余白を加えることができる、中心がずれるため、ズームした際にずれる
 //        mMap.setPadding(0, 0, 300, 0)
+
+        setMapStyle(mMap)
+    }
+
+    // カスタマイズした地図のデザインを反映する
+    // https://mapstyle.withgoogle.com/
+    private fun setMapStyle(googleMap : GoogleMap){
+        try {
+            val success = googleMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    this, R.raw.style
+                )
+            )
+            if (!success) {
+                Log.d("Maps" , "Failed to add Style.")
+            }
+
+        } catch (e: Exception) {
+            Log.d("Maps" , e.toString())
+        }
     }
 }
