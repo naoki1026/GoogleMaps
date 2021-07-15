@@ -2,6 +2,8 @@ package com.example.googlemapsdemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,21 +30,63 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.map_types_menu, menu)
+        return true
+    }
+
+    // 地図の種類を選択することができる
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.normal_map -> {
+                mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            }
+            R.id.hybrid_map -> {
+                mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+            }
+            R.id.satellite_map -> {
+                mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            }
+
+            // terrain 地形
+            R.id.terrain_map -> {
+                mMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            }
+            R.id.none_map -> {
+                mMap.mapType = GoogleMap.MAP_TYPE_NONE
+            }
+        }
+        return true
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
         // Add a marker in Sydney and move the camera
-        val omori = LatLng(35.590718674232875, 139.73016409111685)
-        mMap.addMarker(MarkerOptions().position(omori).title("Marker in omori"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(omori))
+        val tokyo = LatLng(35.68879981093124, 139.77244454788328)
+        mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo"))
+
+        // newLatLngZoomにすることで初期表示する際のズームレベルを指定できる
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokyo, 10f))
+        mMap.uiSettings.apply {
+
+            // ズームボタンが表示される
+            isZoomControlsEnabled = true
+
+            // falseにするとズームジェスチャーが使えなくなる
+//            isZoomGesturesEnabled = false
+
+            // スクロールできなくする
+//            isScrollGesturesEnabled = false
+
+            // location layerをenabledにしないと反映されない
+//            isMyLocationButtonEnabled = true
+
+            // 地図を回転させる場合のみ表示される
+//            isCompassEnabled = true
+        }
+
+        // 地図上に余白を加えることができる、中心がずれるため、ズームした際にずれる
+//        mMap.setPadding(0, 0, 300, 0)
     }
 }
