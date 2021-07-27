@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -13,12 +14,21 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
+import com.example.googlemapsdemo.misc.CameraAndViewport
+import com.example.googlemapsdemo.misc.TypeAndStyle
 import com.google.android.gms.maps.model.MapStyleOptions
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private val typeAndStyle = TypeAndStyle()
+//    private val cameraAndViewport = CameraAndViewport()
+
+    // lazyを使ったインスタンス作成
+    private val cameraAndViewport by lazy {CameraAndViewport()}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,25 +49,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // 地図の種類を選択することができる
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.normal_map -> {
-                mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-            }
-            R.id.hybrid_map -> {
-                mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-            }
-            R.id.satellite_map -> {
-                mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-            }
-
-            // terrain 地形
-            R.id.terrain_map -> {
-                mMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
-            }
-            R.id.none_map -> {
-                mMap.mapType = GoogleMap.MAP_TYPE_NONE
-            }
-        }
+        typeAndStyle.setMapType(item, mMap)
         return true
     }
 
@@ -66,10 +58,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Add a marker in Sydney and move the camera
         val tokyo = LatLng(35.68879981093124, 139.77244454788328)
+        val newyork = LatLng(40.75620413149381, -73.98724093807755)
         mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo"))
+//        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
 
         // newLatLngZoomにすることで初期表示する際のズームレベルを指定できる
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokyo, 10f))
+//        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
         mMap.uiSettings.apply {
 
             // ズームボタンが表示される
@@ -91,24 +86,30 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // 地図上に余白を加えることができる、中心がずれるため、ズームした際にずれる
 //        mMap.setPadding(0, 0, 300, 0)
 
-        setMapStyle(mMap)
-    }
+        typeAndStyle.setMapStyle(mMap, this)
+//        mMap.setMinZoomPreference(15f)
+//        mMap.setMaxZoomPreference(17f)
 
-    // カスタマイズした地図のデザインを反映する
-    // https://mapstyle.withgoogle.com/
-    private fun setMapStyle(googleMap : GoogleMap){
-        try {
-            val success = googleMap.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    this, R.raw.style
-                )
-            )
-            if (!success) {
-                Log.d("Maps" , "Failed to add Style.")
-            }
+        // 4000ミリ秒後にズームする
+//        lifecycleScope.launch {
+//            delay(4000L)
+//            mMap.moveCamera(CameraUpdateFactory.zoomBy(3f))
+//        }
 
-        } catch (e: Exception) {
-            Log.d("Maps" , e.toString())
+        // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
+        lifecycleScope.launch {
+            delay(4000L)
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(newyork))
+
+            // ピンはそのままで、地図が移動する
+//            mMap.moveCamera(CameraUpdateFactory.scrollBy(100f, 100f))
+
+            // 南西、北東の緯度経度を指定
+            // 画面に指定バウンディングボックス＋パディングの領域がおさまるようにカメラザ行を移動する
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(cameraAndViewport.melbourneBounds, 100))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraAndViewport.melbourneBounds.center, 10f))
         }
     }
+
+
 }
