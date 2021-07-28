@@ -60,7 +60,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Add a marker in Sydney and move the camera
         val tokyo = LatLng(35.68879981093124, 139.77244454788328)
         val newyork = LatLng(40.75620413149381, -73.98724093807755)
-        mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo"))
+        val tokyoMarker = mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo"))
 //        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
 
         // newLatLngZoomにすることで初期表示する際のズームレベルを指定できる
@@ -102,7 +102,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
-//            delay(2000L)
+            delay(2000L)
+
+            // マーカーを消す
+//            tokyoMarker.remove()
 //            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo), 1000, object :
 //            GoogleMap.CancelableCallback{
 //                override fun onFinish() {
