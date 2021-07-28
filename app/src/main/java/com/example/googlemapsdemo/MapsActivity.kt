@@ -18,10 +18,11 @@ import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.CameraAndViewport
 import com.example.googlemapsdemo.misc.TypeAndStyle
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -61,6 +62,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val tokyo = LatLng(35.68879981093124, 139.77244454788328)
         val newyork = LatLng(40.75620413149381, -73.98724093807755)
         val tokyoMarker = mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo"))
+        tokyoMarker.tag = "Restaurant"
+
 //        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
 
         // newLatLngZoomにすることで初期表示する際のズームレベルを指定できる
@@ -88,6 +91,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //        mMap.setPadding(0, 0, 300, 0)
 
         typeAndStyle.setMapStyle(mMap, this)
+        mMap.setOnMarkerClickListener(this)
 //        mMap.setMinZoomPreference(15f)
 //        mMap.setMaxZoomPreference(17f)
 
@@ -146,6 +150,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //            mMap.setLatLngBoundsForCameraTarget(cameraAndViewport.melbourneBounds)
 
         }
+    }
+
+    // マーカーをクリックするとタグが表示される
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        if(marker != null) {
+            Log.d("Marker", marker.tag as String)
+        } else {
+            Log.d("Marker", "Empty")
+        }
+
+        // trueにするとRunに表示される
+        // falseにすることでアプリにタグ名が表示される
+        return false
     }
 
 //    private fun onMapClicked(){
