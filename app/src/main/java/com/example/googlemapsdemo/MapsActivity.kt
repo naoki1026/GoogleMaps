@@ -97,8 +97,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //            mMap.moveCamera(CameraUpdateFactory.zoomBy(3f))
 //        }
 
-        onMapClicked()
-        onMapLongClicked()
+//        onMapClicked()
+//        onMapLongClicked()
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
@@ -145,19 +145,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun onMapClicked(){
-        mMap.setOnMapClickListener {
-          Toast.makeText(this@MapsActivity, "Single Click", Toast.LENGTH_SHORT).show()
-        }
-    }
+//    private fun onMapClicked(){
+//        mMap.setOnMapClickListener {
+//          Toast.makeText(this@MapsActivity, "Single Click", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 
-    private fun onMapLongClicked() {
-        mMap.setOnMapLongClickListener {
-//            Toast.makeText(this@MapsActivity, "Long Click", Toast.LENGTH_SHORT).show()
-
-            // クリックした場所の緯度と経度が表示される
-            Toast.makeText(this@MapsActivity, "${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
-            mMap.addMarker((MarkerOptions().position(it).title("Marker in Tokyo")))
-        }
-    }
+//    private fun onMapLongClicked() {
+//        mMap.setOnMapLongClickListener {
+////            Toast.makeText(this@MapsActivity, "Long Click", Toast.LENGTH_SHORT).show()
+//
+//            // クリックした場所の緯度と経度が表示される
+//            Toast.makeText(this@MapsActivity, "${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
+//            mMap.addMarker((MarkerOptions().position(it).title("Marker in Tokyo")))
+//        }
+//    }
 }
