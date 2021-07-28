@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.Marker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -61,7 +61,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // Add a marker in Sydney and move the camera
         val tokyo = LatLng(35.68879981093124, 139.77244454788328)
         val newyork = LatLng(40.75620413149381, -73.98724093807755)
-        val tokyoMarker = mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo"))
+
+        // draggableをtrueにすることでマーカーを移動させることができる
+        val tokyoMarker = mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo").draggable(true))
         tokyoMarker.tag = "Restaurant"
 
 //        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
@@ -91,7 +93,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        mMap.setPadding(0, 0, 300, 0)
 
         typeAndStyle.setMapStyle(mMap, this)
-        mMap.setOnMarkerClickListener(this)
+//        mMap.setOnMarkerClickListener(this)
 //        mMap.setMinZoomPreference(15f)
 //        mMap.setMaxZoomPreference(17f)
 
@@ -103,6 +105,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 //        onMapClicked()
 //        onMapLongClicked()
+
+        mMap.setOnMarkerDragListener(this)
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
@@ -152,18 +156,31 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    // マーカーをクリックするとタグが表示される
-    override fun onMarkerClick(marker: Marker?): Boolean {
-        if(marker != null) {
-            Log.d("Marker", marker.tag as String)
-        } else {
-            Log.d("Marker", "Empty")
-        }
-
-        // trueにするとRunに表示される
-        // falseにすることでアプリにタグ名が表示される
-        return false
+    // ドラッグ&ドロップした場合にログを表示する
+    override fun onMarkerDragStart(p0: Marker) {
+        Log.d("Drag", "Start")
     }
+
+    override fun onMarkerDrag(p0: Marker) {
+        Log.d("Drag", "Drag")
+    }
+
+    override fun onMarkerDragEnd(p0: Marker) {
+        Log.d("Drag", "End")
+    }
+
+    // マーカーをクリックするとタグが表示される
+//    override fun onMarkerClick(marker: Marker?): Boolean {
+//        if(marker != null) {
+//            Log.d("Marker", marker.tag as String)
+//        } else {
+//            Log.d("Marker", "Empty")
+//        }
+//
+//        // trueにするとRunに表示される
+//        // falseにすることでアプリにタグ名が表示される
+//        return false
+//    }
 
 //    private fun onMapClicked(){
 //        mMap.setOnMapClickListener {
