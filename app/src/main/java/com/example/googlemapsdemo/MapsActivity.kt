@@ -23,12 +23,19 @@ import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private val typeAndStyle = TypeAndStyle()
 //    private val cameraAndViewport = CameraAndViewport()
+
+    // Add a marker in Sydney and move the camera
+    private val tokyo = LatLng(35.68879981093124, 139.77244454788328)
+    private val taiwan = LatLng(23.459621515018753, 121.20255613443851)
+    private val hokkaido = LatLng(43.34528002870465, 142.6073483968095)
+    private val beijing = LatLng(39.92169741521567, 116.40292456525955)
+
 
     // lazyを使ったインスタンス作成
     private val cameraAndViewport by lazy {CameraAndViewport()}
@@ -59,11 +66,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val tokyo = LatLng(35.68879981093124, 139.77244454788328)
-        val tokyo2 = LatLng(35.69672352883898, 139.62520335664098)
-        val newyork = LatLng(40.75620413149381, -73.98724093807755)
-
         // draggableをtrueにすることでマーカーを移動させることができる
         val tokyoMarker = mMap.addMarker(MarkerOptions()
             .position(tokyo).title("Marker in Tokyo")
@@ -71,7 +73,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             .snippet("Some random text"))
 
         val tokyoMarker2 = mMap.addMarker(MarkerOptions()
-            .position(tokyo2).title("Marker in Tokyo2")
+            .position(taiwan).title("Marker in Tokyo2")
             .title("Marker in Tokyo2")
 
              // スニペットとは断片という意味
@@ -126,6 +128,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // 地図上に余白を加えることができる、中心がずれるため、ズームした際にずれる
 //        mMap.setPadding(0, 0, 300, 0)
 
+        mMap.setOnPolylineClickListener(this)
+
 //        mMap.setOnMarkerClickListener(this)
         typeAndStyle.setMapStyle(mMap, this)
 //        mMap.setOnMarkerClickListener(this)
@@ -143,9 +147,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 //        mMap.setOnMarkerDragListener(this)
 
+
+
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
-            delay(2000L)
+//            delay(2000L)
+            addPolyline()
 
             // マーカーを消す
 //            tokyoMarker.remove()
@@ -191,9 +198,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // カスタマイズしたinfoを表示させることができる
-        mMap.setInfoWindowAdapter(CustomInfoAdapter(this))
+//        mMap.setInfoWindowAdapter(CustomInfoAdapter(this))
     }
 
+    // 2箇所を結ぶ線を引く
+    private suspend fun addPolyline(){
+        val polyline = mMap.addPolyline(
+            PolylineOptions().apply {
+                add(tokyo, taiwan, hokkaido)
+                width(5f)
+                color(Color.BLUE)
+
+                // 真っ直ぐの線ではなく、カーブの線を引く
+                geodesic(true)
+                clickable(true)
+            }
+        )
+
+        delay(10000)
+
+        val newList = listOf(
+            tokyo, beijing, hokkaido
+        )
+
+        polyline.points = newList
+    }
+
+//    override fun onPoiClick(p0: PointOfInterest) {
+//        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
+//    }
+
+    override fun onPolylineClick(p0: Polyline) {
+        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
+    }
 
 //    override fun onMarkerClick(marker: Marker?): Boolean {
 //        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f), 2000, null)
