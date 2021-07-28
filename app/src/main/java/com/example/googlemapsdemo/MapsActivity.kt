@@ -17,13 +17,14 @@ import androidx.lifecycle.lifecycleScope
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.CameraAndViewport
 import com.example.googlemapsdemo.misc.CustomInfoAdapter
+import com.example.googlemapsdemo.misc.Shapes
 import com.example.googlemapsdemo.misc.TypeAndStyle
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -39,6 +40,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyli
 
     // lazyを使ったインスタンス作成
     private val cameraAndViewport by lazy {CameraAndViewport()}
+    private val shapes by lazy { Shapes() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,8 +69,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyli
         mMap = googleMap
 
         // draggableをtrueにすることでマーカーを移動させることができる
-        val tokyoMarker = mMap.addMarker(MarkerOptions()
-            .position(tokyo).title("Marker in Tokyo")
+        val hokkaidoMarker = mMap.addMarker(MarkerOptions()
+            .position(hokkaido).title("Marker in Tokyo")
             .title("Marker in Tokyo")
             .snippet("Some random text"))
 
@@ -100,12 +102,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyli
 //            .icon(fromVectorToBitmap(R.drawable.ic_android_black_24dp, Color.parseColor(("#000000")))))
 
 
-        tokyoMarker.tag = "Restaurant"
+        hokkaidoMarker.tag = "Restaurant"
 
 //        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
 
         // newLatLngZoomにすることで初期表示する際のズームレベルを指定できる
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokyo, 10f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hokkaido, 7f))
 //        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
         mMap.uiSettings.apply {
 
@@ -128,7 +130,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyli
         // 地図上に余白を加えることができる、中心がずれるため、ズームした際にずれる
 //        mMap.setPadding(0, 0, 300, 0)
 
-        mMap.setOnPolylineClickListener(this)
+//        mMap.setOnPolylineClickListener(this)
 
 //        mMap.setOnMarkerClickListener(this)
         typeAndStyle.setMapStyle(mMap, this)
@@ -147,12 +149,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyli
 
 //        mMap.setOnMarkerDragListener(this)
 
+        // 4つの点を結んで形を作る（四角形）
+        shapes.addPolygon(mMap)
+
 
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
 //            delay(2000L)
-            addPolyline()
+//            addPolyline()
 
             // マーカーを消す
 //            tokyoMarker.remove()
@@ -201,36 +206,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolyli
 //        mMap.setInfoWindowAdapter(CustomInfoAdapter(this))
     }
 
-    // 2箇所を結ぶ線を引く
-    private suspend fun addPolyline(){
-        val polyline = mMap.addPolyline(
-            PolylineOptions().apply {
-                add(tokyo, taiwan, hokkaido)
-                width(5f)
-                color(Color.BLUE)
-
-                // 真っ直ぐの線ではなく、カーブの線を引く
-                geodesic(true)
-                clickable(true)
-            }
-        )
-
-        delay(10000)
-
-        val newList = listOf(
-            tokyo, beijing, hokkaido
-        )
-
-        polyline.points = newList
-    }
 
 //    override fun onPoiClick(p0: PointOfInterest) {
 //        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
 //    }
 
-    override fun onPolylineClick(p0: Polyline) {
-        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
-    }
+//    override fun onPolylineClick(p0: Polyline) {
+//        Toast.makeText(this, "Clicked", Toast.LENGTH_SHORT).show()
+//    }
 
 //    override fun onMarkerClick(marker: Marker?): Boolean {
 //        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f), 2000, null)
