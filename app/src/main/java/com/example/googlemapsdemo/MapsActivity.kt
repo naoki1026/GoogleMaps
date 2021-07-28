@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -98,7 +99,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
-            delay(4000L)
+            delay(2000L)
+//            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo), 1000, object :
+//            GoogleMap.CancelableCallback{
+//                override fun onFinish() {
+//                    Toast.makeText(this@MapsActivity, "Finished", Toast.LENGTH_SHORT).show()
+//                }
+//
+//                // アニメーションの途中で操作した場合に呼び出される
+//                override fun onCancel() {
+//                    Toast.makeText(this@MapsActivity, "Cancelled", Toast.LENGTH_SHORT).show()
+//                }
+//            })
+
+            // ズーム（アニメーション）
+//            mMap.animateCamera(CameraUpdateFactory.zoomTo(15f), 1000, null)
+
+
+            //　カメラが右に移動する（アニメーション）
+//            mMap.animateCamera(CameraUpdateFactory.scrollBy(200f, 0f), 2000 , null)
+
+
+
 //            mMap.moveCamera(CameraUpdateFactory.newLatLng(newyork))
 
             // ピンはそのままで、地図が移動する
@@ -106,14 +128,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             // 南西、北東の緯度経度を指定
             // 画面に指定バウンディングボックス＋パディングの領域がおさまるようにカメラが移動する
-            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(cameraAndViewport.melbourneBounds, 100))
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(cameraAndViewport.melbourneBounds, 100))
+
+            // 最初に表示された都市から途切れずに移動する
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(cameraAndViewport.melbourneBounds, 100), 2000, null)
 
             // ズーム
 //            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraAndViewport.melbourneBounds.center, 10f))
 
             // スクロールできるエリアを制限する
-            mMap.setLatLngBoundsForCameraTarget(cameraAndViewport.melbourneBounds)
+//            mMap.setLatLngBoundsForCameraTarget(cameraAndViewport.melbourneBounds)
 
+        }
+    }
+
+    private fun onMapClicked(){
+        mMap.setOnMapClickListener {
+          Toast.makeText(this@MapsActivity, "Single Click", Toast.LENGTH_SHORT).show()
         }
     }
 }
