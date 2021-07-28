@@ -14,18 +14,15 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.CameraAndViewport
 import com.example.googlemapsdemo.misc.TypeAndStyle
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -69,11 +66,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // draggableをtrueにすることでマーカーを移動させることができる
         val tokyoMarker = mMap.addMarker(MarkerOptions()
             .position(tokyo).title("Marker in Tokyo")
-            .title("Marker in Tokyo"))
+            .title("Marker in Tokyo")
+            .snippet("Some random text"))
 
         val tokyoMarker2 = mMap.addMarker(MarkerOptions()
             .position(tokyo2).title("Marker in Tokyo2")
             .title("Marker in Tokyo2")
+
+             // スニペットとは断片という意味
+             // マーカーが2つ以上存在して、片方のwindowが表示された場合に
+             // もう片方が非表示になる
+            .snippet("Some random text")
 
             // 2つのマーカーが重なった場合の重なり
             .zIndex(1f))
@@ -122,6 +125,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         // 地図上に余白を加えることができる、中心がずれるため、ズームした際にずれる
 //        mMap.setPadding(0, 0, 300, 0)
 
+        mMap.setOnMarkerClickListener(this)
         typeAndStyle.setMapStyle(mMap, this)
 //        mMap.setOnMarkerClickListener(this)
 //        mMap.setMinZoomPreference(15f)
@@ -184,6 +188,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //            mMap.setLatLngBoundsForCameraTarget(cameraAndViewport.melbourneBounds)
 
         }
+    }
+
+
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f), 2000, null)
+        marker?.showInfoWindow()
+        return true
     }
 
 //    // ドラッグ&ドロップした場合にログを表示する
