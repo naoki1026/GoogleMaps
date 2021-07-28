@@ -97,9 +97,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //            mMap.moveCamera(CameraUpdateFactory.zoomBy(3f))
 //        }
 
+        onMapClicked()
+        onMapLongClicked()
+
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
-            delay(2000L)
+//            delay(2000L)
 //            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo), 1000, object :
 //            GoogleMap.CancelableCallback{
 //                override fun onFinish() {
@@ -148,6 +151,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    //test
-    // test
+    private fun onMapLongClicked() {
+        mMap.setOnMapLongClickListener {
+//            Toast.makeText(this@MapsActivity, "Long Click", Toast.LENGTH_SHORT).show()
+
+            // クリックした場所の緯度と経度が表示される
+            Toast.makeText(this@MapsActivity, "${it.latitude}, ${it.longitude}", Toast.LENGTH_SHORT).show()
+            mMap.addMarker((MarkerOptions().position(it).title("Marker in Tokyo")))
+        }
+    }
 }
