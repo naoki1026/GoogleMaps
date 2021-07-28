@@ -1,28 +1,31 @@
 package com.example.googlemapsdemo
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.CameraAndViewport
 import com.example.googlemapsdemo.misc.TypeAndStyle
-import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -63,7 +66,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val newyork = LatLng(40.75620413149381, -73.98724093807755)
 
         // draggableをtrueにすることでマーカーを移動させることができる
-        val tokyoMarker = mMap.addMarker(MarkerOptions().position(tokyo).title("Marker in tokyo").draggable(true))
+        val tokyoMarker = mMap.addMarker(MarkerOptions()
+            .position(tokyo).title("Marker in Tokyo")
+            .title("Marker in Tokyo")
+
+             // 地図の向きを変更してもマーカーはの向きは変わらない
+            .flat(true))
+
+            // 濃淡
+//            .alpha(0.5f)
+
+            // 傾き
+//            .rotation(90f))
+//            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)))
+//            .icon(BitmapDescriptorFactory.defaultMarker(26f)))
+
+            // このままだとクラッシュしてしまう
+//            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_android_black_24dp)))
+//            .icon(fromVectorToBitmap(R.drawable.ic_android_black_24dp, Color.parseColor(("#000000")))))
+
+
         tokyoMarker.tag = "Restaurant"
 
 //        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraAndViewport.tokyo))
@@ -106,7 +128,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        onMapClicked()
 //        onMapLongClicked()
 
-        mMap.setOnMarkerDragListener(this)
+//        mMap.setOnMarkerDragListener(this)
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
@@ -156,18 +178,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    // ドラッグ&ドロップした場合にログを表示する
-    override fun onMarkerDragStart(p0: Marker) {
-        Log.d("Drag", "Start")
-    }
-
-    override fun onMarkerDrag(p0: Marker) {
-        Log.d("Drag", "Drag")
-    }
-
-    override fun onMarkerDragEnd(p0: Marker) {
-        Log.d("Drag", "End")
-    }
+//    // ドラッグ&ドロップした場合にログを表示する
+//    override fun onMarkerDragStart(p0: Marker) {
+//        Log.d("Drag", "Start")
+//    }
+//
+//    override fun onMarkerDrag(p0: Marker) {
+//        Log.d("Drag", "Drag")
+//    }
+//
+//    override fun onMarkerDragEnd(p0: Marker) {
+//        Log.d("Drag", "End")
+//    }
 
     // マーカーをクリックするとタグが表示される
 //    override fun onMarkerClick(marker: Marker?): Boolean {
@@ -197,4 +219,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //            mMap.addMarker((MarkerOptions().position(it).title("Marker in Tokyo")))
 //        }
 //    }
+
+    // アイコンをカスタマイズすることができる
+    private fun fromVectorToBitmap(id: Int, color: Int) : BitmapDescriptor {
+        val vectorDrawable : Drawable? = ResourcesCompat.getDrawable(resources, id, null)
+        if(vectorDrawable == null) {
+            Log.d("MapsActivity", "Resource bot found.")
+            return BitmapDescriptorFactory.defaultMarker()
+        }
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+        DrawableCompat.setTint(vectorDrawable, color)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 }
