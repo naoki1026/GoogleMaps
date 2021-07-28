@@ -3,6 +3,7 @@ package com.example.googlemapsdemo.misc
 import android.graphics.Color
 import com.example.googlemapsdemo.R
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -47,7 +48,8 @@ class Shapes {
             tokyo, beijing, hokkaido
         )
 
-        polyline.points = newList
+//        polyline.points = newList
+            polyline.points = listOf(tokyo, beijing, hokkaido)
     }
 
     fun addPolygon(mMap: GoogleMap){
@@ -73,5 +75,20 @@ class Shapes {
 
             }
         )
+    }
+
+    suspend fun addCircle(mMap: GoogleMap){
+        val circle = mMap.addCircle(
+            CircleOptions().apply {
+                center(hokkaido)
+                radius(50000.0)
+                fillColor(R.color.purple_200)
+            }
+        )
+
+        delay(4000L)
+
+        // 色が変わる
+        circle.fillColor = R.color.black
     }
 }

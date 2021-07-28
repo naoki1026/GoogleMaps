@@ -150,12 +150,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //        mMap.setOnMarkerDragListener(this)
 
         // 4つの点を結んで形を作る（四角形）
-        shapes.addPolygon(mMap)
+//        shapes.addPolygon(mMap)
+
 
 
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
+            shapes.addCircle(mMap)
 //            delay(2000L)
 //            addPolyline()
 
