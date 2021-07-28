@@ -16,13 +16,14 @@ import androidx.lifecycle.lifecycleScope
 
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.CameraAndViewport
+import com.example.googlemapsdemo.misc.CustomInfoAdapter
 import com.example.googlemapsdemo.misc.TypeAndStyle
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -125,7 +126,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // 地図上に余白を加えることができる、中心がずれるため、ズームした際にずれる
 //        mMap.setPadding(0, 0, 300, 0)
 
-        mMap.setOnMarkerClickListener(this)
+//        mMap.setOnMarkerClickListener(this)
         typeAndStyle.setMapStyle(mMap, this)
 //        mMap.setOnMarkerClickListener(this)
 //        mMap.setMinZoomPreference(15f)
@@ -188,14 +189,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //            mMap.setLatLngBoundsForCameraTarget(cameraAndViewport.melbourneBounds)
 
         }
+
+        // カスタマイズしたinfoを表示させることができる
+        mMap.setInfoWindowAdapter(CustomInfoAdapter(this))
     }
 
 
-    override fun onMarkerClick(marker: Marker?): Boolean {
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f), 2000, null)
-        marker?.showInfoWindow()
-        return true
-    }
+//    override fun onMarkerClick(marker: Marker?): Boolean {
+//        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f), 2000, null)
+//        marker?.showInfoWindow()
+//        return true
+//    }
 
 //    // ドラッグ&ドロップした場合にログを表示する
 //    override fun onMarkerDragStart(p0: Marker) {
