@@ -105,12 +105,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //            mMap.moveCamera(CameraUpdateFactory.scrollBy(100f, 100f))
 
             // 南西、北東の緯度経度を指定
-            // 画面に指定バウンディングボックス＋パディングの領域がおさまるようにカメラザ行を移動する
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(cameraAndViewport.melbourneBounds, 100))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraAndViewport.melbourneBounds.center, 10f))
+            // 画面に指定バウンディングボックス＋パディングの領域がおさまるようにカメラが移動する
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(cameraAndViewport.melbourneBounds, 100))
+
+            // ズーム
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cameraAndViewport.melbourneBounds.center, 10f))
+
+            // スクロールできるエリアを制限する
+            mMap.setLatLngBoundsForCameraTarget(cameraAndViewport.melbourneBounds)
+
         }
     }
-
-  //test
-    // test2
 }
