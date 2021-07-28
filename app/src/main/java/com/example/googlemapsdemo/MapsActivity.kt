@@ -63,15 +63,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Add a marker in Sydney and move the camera
         val tokyo = LatLng(35.68879981093124, 139.77244454788328)
+        val tokyo2 = LatLng(35.69672352883898, 139.62520335664098)
         val newyork = LatLng(40.75620413149381, -73.98724093807755)
 
         // draggableをtrueにすることでマーカーを移動させることができる
         val tokyoMarker = mMap.addMarker(MarkerOptions()
             .position(tokyo).title("Marker in Tokyo")
-            .title("Marker in Tokyo")
+            .title("Marker in Tokyo"))
+
+        val tokyoMarker2 = mMap.addMarker(MarkerOptions()
+            .position(tokyo2).title("Marker in Tokyo2")
+            .title("Marker in Tokyo2")
+
+            // 2つのマーカーが重なった場合の重なり
+            .zIndex(1f))
 
              // 地図の向きを変更してもマーカーはの向きは変わらない
-            .flat(true))
+//            .flat(true))
 
             // 濃淡
 //            .alpha(0.5f)
@@ -220,22 +228,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //        }
 //    }
 
-    // アイコンをカスタマイズすることができる
-    private fun fromVectorToBitmap(id: Int, color: Int) : BitmapDescriptor {
-        val vectorDrawable : Drawable? = ResourcesCompat.getDrawable(resources, id, null)
-        if(vectorDrawable == null) {
-            Log.d("MapsActivity", "Resource bot found.")
-            return BitmapDescriptorFactory.defaultMarker()
-        }
-        val bitmap = Bitmap.createBitmap(
-            vectorDrawable.intrinsicWidth,
-            vectorDrawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvas = Canvas(bitmap)
-        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
-        DrawableCompat.setTint(vectorDrawable, color)
-        vectorDrawable.draw(canvas)
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
+
 }
