@@ -147,4 +147,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
           Toast.makeText(this@MapsActivity, "Single Click", Toast.LENGTH_SHORT).show()
         }
     }
+
+    //test
 }
