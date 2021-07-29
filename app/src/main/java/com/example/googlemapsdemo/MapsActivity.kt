@@ -1,16 +1,21 @@
 package com.example.googlemapsdemo
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -123,7 +128,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //        mMap.setOnPolylineClickListener(this)
 
 //        mMap.setOnMarkerClickListener(this)
+
         typeAndStyle.setMapStyle(mMap, this)
+
+        // ロケーションボタンを表示する
+        checkLocationPermission()
 //        mMap.setOnMarkerClickListener(this)
 //        mMap.setMinZoomPreference(15f)
 //        mMap.setMaxZoomPreference(17f)
@@ -144,13 +153,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-        val groundOverlay = overlays.addGroundOverlay(mMap)
+//        val groundOverlay = overlays.addGroundOverlay(mMap)
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
-            delay(4000L)
-//            groundOverlay.remove()
-            groundOverlay.transparency = 0.5f
+//            delay(4000L)
+////            groundOverlay.remove()
+//            groundOverlay.transparency = 0.5f
 
 //            shapes.addPolyline(mMap)
 //            shapes.addCircle(mMap)
@@ -261,5 +270,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 //        }
 //    }
 
+    private fun checkLocationPermission(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED){
+            mMap.isMyLocationEnabled = true
+            Toast.makeText(this, "Already Enabled", Toast.LENGTH_SHORT).show()
+        } else {
+            requestPermission()
+        }
+    }
 
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),1
+        )
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode != 1){
+           return
+        }
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(this, "Granted!", Toast.LENGTH_SHORT).show()
+            mMap.isMyLocationEnabled = true
+        } else {
+            Toast.makeText(this, "We need your permission!", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
