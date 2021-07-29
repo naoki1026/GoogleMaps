@@ -1,27 +1,15 @@
 package com.example.googlemapsdemo
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.example.googlemapsdemo.databinding.ActivityMapsBinding
-import com.example.googlemapsdemo.misc.CameraAndViewport
-import com.example.googlemapsdemo.misc.CustomInfoAdapter
-import com.example.googlemapsdemo.misc.Shapes
-import com.example.googlemapsdemo.misc.TypeAndStyle
+import com.example.googlemapsdemo.misc.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -41,6 +29,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     // lazyを使ったインスタンス作成
     private val cameraAndViewport by lazy {CameraAndViewport()}
     private val shapes by lazy { Shapes() }
+    private val overlays by lazy { Overlays() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,10 +143,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
+        overlays.addGroundOverlay(mMap)
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
-            shapes.addCircle(mMap)
+            shapes.addPolyline(mMap)
+//            shapes.addCircle(mMap)
 //            delay(2000L)
 //            addPolyline()
 

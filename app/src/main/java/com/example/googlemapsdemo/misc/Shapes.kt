@@ -3,10 +3,7 @@ package com.example.googlemapsdemo.misc
 import android.graphics.Color
 import com.example.googlemapsdemo.R
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolygonOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.delay
 
 class Shapes {
@@ -29,16 +26,27 @@ class Shapes {
 
 
         // 2箇所を結ぶ線を引く
-    private suspend fun addPolyline(mMap: GoogleMap){
+    suspend fun addPolyline(mMap: GoogleMap){
+
+        // 線のパターンを定義している
+//        val pattern = listOf(Dot(), Gap(30f), Dash(50f), Gap(30f))
+//        val pattern = listOf(Dot(), Gap(30f))
         val polyline = mMap.addPolyline(
             PolylineOptions().apply {
                 add(tokyo, taiwan, hokkaido)
-                width(5f)
+                width(120f)
                 color(Color.BLUE)
 
                 // 真っ直ぐの線ではなく、カーブの線を引く
                 geodesic(true)
                 clickable(true)
+//                pattern(pattern)
+                jointType(JointType.ROUND)
+                startCap(CustomCap(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker), 20f))
+//                startCap(RoundCap())
+//                startCap(CustomCap(BitmapDescriptorFactory.fromResource(R.drawable.common_google_signin_btn_icon_dark_focused)))
+                endCap(RoundCap())
+
             }
         )
 
