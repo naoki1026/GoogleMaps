@@ -42,7 +42,7 @@ class Shapes {
                 clickable(true)
 //                pattern(pattern)
                 jointType(JointType.ROUND)
-                startCap(CustomCap(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker), 20f))
+                startCap(CustomCap(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker), 100f))
 //                startCap(RoundCap())
 //                startCap(CustomCap(BitmapDescriptorFactory.fromResource(R.drawable.common_google_signin_btn_icon_dark_focused)))
                 endCap(RoundCap())

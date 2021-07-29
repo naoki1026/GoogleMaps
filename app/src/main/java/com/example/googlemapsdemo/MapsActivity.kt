@@ -10,6 +10,7 @@ import com.example.googlemapsdemo.databinding.ActivityMapsBinding
 import com.example.googlemapsdemo.misc.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -143,11 +144,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-        overlays.addGroundOverlay(mMap)
+        val groundOverlay = overlays.addGroundOverlay(mMap)
 
         // 4000ミリ秒後にニューヨークに移動する（ピンは東京のまま）
         lifecycleScope.launch {
-            shapes.addPolyline(mMap)
+            delay(4000L)
+//            groundOverlay.remove()
+            groundOverlay.transparency = 0.5f
+
+//            shapes.addPolyline(mMap)
 //            shapes.addCircle(mMap)
 //            delay(2000L)
 //            addPolyline()
